@@ -2,9 +2,6 @@ package application.design.Controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import application.design.WindowsController;
-import com.sun.java.swing.plaf.windows.WindowsCheckBoxMenuItemUI;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
@@ -17,11 +14,8 @@ import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
@@ -42,7 +36,8 @@ public class Create implements Initializable {
 	private final DoubleProperty angleX = new SimpleDoubleProperty(0);
 	private final DoubleProperty angleY = new SimpleDoubleProperty(0);
 
-	private final Sphere sphere = new Sphere(35);
+	private final Sphere sphere = new Sphere(25);
+	private final Sphere star = new Sphere (45);
 
 	@FXML
 	private TextArea x;
@@ -65,31 +60,33 @@ public class Create implements Initializable {
 		camera.setFarClip(10000);
 		camera.translateZProperty().set(-1000);
 		PhongMaterial earthMaterial = new PhongMaterial();
-		earthMaterial.setDiffuseMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-d.jpg")));
-		earthMaterial.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-l.jpg")));
-		earthMaterial.setSpecularMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-s.jpg")));
-		earthMaterial.setBumpMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-n.jpg")));
-		sphere.setRotationAxis(Rotate.Y_AXIS);
-		sphere.setMaterial(earthMaterial);
-		Ellipse ellipseEarth = new Ellipse( xR*80, yR * 80);
-		ellipseEarth.setStroke(Color.BLACK);
+		prepareEarth();
+		prepareStar();
+		//sphere.setRotationAxis(Rotate.Y_AXIS);
+		//sphere.setMaterial(earthMaterial);
+		Ellipse ellipseEarth = new Ellipse( xR*85, yR * 85);
+		ellipseEarth.setStroke(Color.RED);
 		ellipseEarth.setFill(Color.GRAY);
 		PathTransition transitionEarth = new PathTransition();
 		transitionEarth.setPath(ellipseEarth);
 		transitionEarth.setNode(sphere);
 		transitionEarth.setInterpolator(Interpolator.LINEAR);
-		transitionEarth.setDuration(Duration.seconds(7.000017421));
+		if (xR > yR)
+			transitionEarth.setDuration(Duration.seconds(5));
+		if (xR == yR)
+			transitionEarth.setDuration(Duration.seconds(10));
+		if (xR < yR)
+			transitionEarth.setDuration(Duration.seconds(15));
 		transitionEarth.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
 		transitionEarth.setCycleCount(Timeline.INDEFINITE);
-
 		transitionEarth.play();
 
 		prepareAnimation();
 		Circle circle = new Circle();
 		Group world = new Group();
-		if (xR >= 5 || yR >= 5 )
-			world.translateZProperty().set(world.getTranslateZ() + 1500 * Math.max(xR, yR)/5 );
-		world.getChildren().addAll(prepareEarth(),circle, ellipseEarth);
+		if (xR >= 4 || yR >= 4 )
+			world.translateZProperty().set(world.getTranslateZ() + 1500 * Math.max(xR, yR)/4 );
+		world.getChildren().addAll(prepareEarth(),circle, ellipseEarth, star);
 
 		Scene scene = new Scene(world, WIDTH, HEIGHT, true);
 		scene.setFill(Color.SILVER);
@@ -101,27 +98,22 @@ public class Create implements Initializable {
 		primaryStage.setTitle("Model of Eath");
 		primaryStage.setScene(scene);
 		primaryStage.show();
-
-
 	}
+
 	@FXML
 	private void derermineE(){
 		double a = Double.parseDouble(x.getText()); double b = Double.parseDouble(y.getText());
-		double answ = Math.sqrt(Math.abs(a*a - b*b))/a;
-		e.setText("e = " + Double.toString(answ));
-
-
-
-
-
-
+		double answ = Math.sqrt (1 -  Math.min(a,b) * Math.min(a,b) / (Math.max(a,b) * Math.max (a,b)));
+				e.setText("e = " + Double.toString(answ));
 	}
+
 	private void prepareAnimation() {
 		AnimationTimer timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-				sphere.rotateProperty().set(sphere.getRotate() + 100);
-			}
+				sphere.rotateProperty().set(sphere.getRotate() + 1000);
+				star.rotateProperty().set(star.getRotate() + 0.14);
+		}
 		};
 		timer.start();
 	}
@@ -132,10 +124,21 @@ public class Create implements Initializable {
 		earthMaterial.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-l.jpg")));
 		earthMaterial.setSpecularMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-s.jpg")));
 		earthMaterial.setBumpMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-n.jpg")));
-
 		sphere.setRotationAxis(Rotate.Y_AXIS);
 		sphere.setMaterial(earthMaterial);
 		return sphere;
+	}
+	private void prepareStar() {
+		PhongMaterial earthMaterial = new PhongMaterial();
+
+		earthMaterial.setDiffuseMap(new Image(getClass().getResourceAsStream("/resources/star/1xb.jpg")));
+		//earthMaterial.setDiffuseColor(Color.RED);
+		//earthMaterial.setSpecularColor(Color.RED);
+		//earthMaterial.setSelfIlluminationMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-l.jpg")));
+		//earthMaterial.setSpecularMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-s.jpg")));
+		//earthMaterial.setBumpMap(new Image(getClass().getResourceAsStream("/resources/earth/earth-n.jpg")));
+		star.setRotationAxis(Rotate.Y_AXIS);
+		star.setMaterial(earthMaterial);
 	}
 
 	private void initMouseControl(Group group, Scene scene, Stage stage) {
