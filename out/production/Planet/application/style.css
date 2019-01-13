@@ -3,7 +3,7 @@
      -fx-border-color : #000000;
 }
 .text-field:focused {
-    -fx-border-color:red;
+    -fx-border-color:green;
 }
 .comboBox{
     -fx-background-color: #FFFFFF;
@@ -18,17 +18,16 @@
 }
 
 .label-bright {
-    -fx-font-size: 11pt;
     -fx-font-family: "Segoe UI Semibold";
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-opacity: 1;
 }
 
 .label-header {
-    -fx-font-size: 32pt;
     -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-opacity: 1;
+    -fx-border-color : #000000;
 }
 
 .table-view {
@@ -73,33 +72,6 @@
     -fx-background-color: transparent, derive(#1d1d1d,20%);
 }
 
-.split-pane {
-    -fx-padding: 1 0 0 0;
-}
-
-.menu-bar {
-    -fx-background-color: derive(#1d1d1d,20%);
-}
-
-.context-menu {
-    -fx-background-color: derive(#1d1d1d,50%);
-}
-
-.menu-bar .label {
-    -fx-font-size: 14pt;
-    -fx-font-family: "Segoe UI Light";
-    -fx-text-fill: white;
-    -fx-opacity: 0.9;
-}
-
-.menu .left-container {
-    -fx-background-color: black;
-}
-
-.text-field {
-    -fx-focus-color: transparent;
-	-fx-faint-focus-color: transparent;
-}
 
 /*
  * Metro style Push Button
